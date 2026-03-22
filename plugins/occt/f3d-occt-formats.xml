@@ -16,4 +16,8 @@
     <comment>Open CASCADE XBF</comment>
     <glob pattern="*.xbf"/>
   </mime-type>
+    <mime-type type="application/vnd.wrl">
+    <comment>Open CASCADE VRML</comment>
+    <glob pattern="*.wrl"/>
+  </mime-type>
 </mime-info>

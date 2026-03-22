@@ -37,6 +37,7 @@ public:
     BREP,
     STEP,
     IGES,
+    VRML,
     XBF,
   };
 

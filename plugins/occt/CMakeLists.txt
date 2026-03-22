@@ -65,6 +65,23 @@ f3d_plugin_declare_reader(
   OPTIONS linear_deflection angular_deflection read_wire relative_deflection
 )
 
+set(_occt_format "VRML")
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/FORMAT.inl.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/${_occt_format}.inl"
+  @ONLY)
+
+f3d_plugin_declare_reader(
+  NAME VRML
+  EXTENSIONS wrl
+  MIMETYPES model/vrml
+  VTK_READER vtkF3DOCCTReader
+  SCORE 40 # No proper CanReadFile implementation
+  FORMAT_DESCRIPTION "Initial Graphics Exchange Specification"
+  CUSTOM_CODE "${CMAKE_CURRENT_BINARY_DIR}/VRML.inl"
+  OPTIONS linear_deflection angular_deflection read_wire relative_deflection
+)
+
 if(VTK_VERSION VERSION_GREATER_EQUAL 9.5.20251223)
   set(_SUPPORTS_STREAM SUPPORTS_STREAM)
   set(_has_supports_stream 1)
@@ -119,6 +136,18 @@ if (F3D_PLUGIN_OCCT_COLORING_SUPPORT)
     OPTIONS linear_deflection angular_deflection read_wire relative_deflection
   )
 endif()
+
+f3d_plugin_declare_reader(
+  NAME VRML
+  EXTENSIONS wrl
+  MIMETYPES application/vnd.wrl
+  VTK_READER vtkF3DOCCTReader
+  FORMAT_DESCRIPTION "Open CASCADE VRML"
+  ${_SUPPORTS_STREAM}
+  CAN_READ CUSTOM
+  CUSTOM_CODE "${CMAKE_CURRENT_BINARY_DIR}/VRML.inl"
+  OPTIONS linear_deflection angular_deflection read_wire relative_deflection
+)
 
 set(rpaths "")
 get_target_property(target_type TKernel TYPE)

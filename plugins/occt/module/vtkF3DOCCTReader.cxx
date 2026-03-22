@@ -19,6 +19,7 @@
 #include <Poly_Triangulation.hxx>
 #include <Quantity_Color.hxx>
 #include <STEPControl_Reader.hxx>
+#include <VrmlAPI_CafReader.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_PrimitiveTypes.hxx>
 #include <Storage_StreamTypeMismatchError.hxx>
@@ -628,6 +629,20 @@ bool TransferToDocument(vtkF3DOCCTReader* that, T& reader, Handle(TDocStd_Docume
     return false;
   }
 }
+
+//----------------------------------------------------------------------------
+template <typename T>
+bool TransferToDocumentXDE(vtkF3DOCCTReader* that, T& reader, Handle(TDocStd_Document) doc)
+{
+  Message_ProgressRange range;
+  reader.SetDocument( doc );
+  if (reader.Perform(that->GetFileName().c_str(), range)) {
+    return true;
+  }
+  vtkErrorWithObjectMacro(that, "Failed opening file " << that->GetFileName());
+  return false;
+}
+
 #endif
 
 //----------------------------------------------------------------------------
@@ -720,6 +735,10 @@ int vtkF3DOCCTReader::RequestData(
   {
     IGESCAFControl_Reader reader;
     success = TransferToDocument(this, reader, doc);
+  }
+  else if (this->FileFormat == FILE_FORMAT::VRML) {
+    VrmlAPI_CafReader reader;
+    success = TransferToDocumentXDE(this, reader, doc);
   }
   else if (this->FileFormat == FILE_FORMAT::XBF)
   {
